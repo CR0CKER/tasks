@@ -4,7 +4,7 @@
   These should not be translated 
 -->
 <resources>
-  <string name="app_package">org.tasks</string>
+  <string name="app_package">org.tasks.mdtest</string>
   <string name="backup_api_key">AEdPqrEAAAAI49v5bBusi_bq1bgLBB1LIsepNV0eBrFkQrBZkw</string>
   <string name="FSA_label">Tasks Shortcut</string>
   <string name="caldav">CalDAV</string>

@@ -1,0 +1,50 @@
+# Fork-only: builds a side-by-side debug APK for testing on a phone. Never part of an upstream PR.
+name: Test APK
+
+on:
+  push:
+    branches:
+      - apk/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Register the test package name with the Google Services plugin
+        run: |
+          python3 - <<'PY'
+          import copy, json
+          path = "app/src/debug/google-services.json"
+          data = json.load(open(path))
+          client = copy.deepcopy(data["client"][0])
+          client["client_info"]["android_client_info"]["package_name"] = "org.tasks.mdtest"
+          data["client"].append(client)
+          json.dump(data, open(path, "w"), indent=2)
+          PY
+
+      - name: Assemble generic debug APK
+        run: ./gradlew :app:assembleGenericDebug
+
+      - name: Fail if the APK still points at the official app's providers
+        run: python3 .github/scripts/check-test-apk.py app/build/outputs/apk/generic/debug/*.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: tasks-mdtest-apk
+          path: app/build/outputs/apk/generic/debug/*.apk

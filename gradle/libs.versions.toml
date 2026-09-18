@@ -1,5 +1,5 @@
 [versions]
-applicationId = "org.tasks"
+applicationId = "org.tasks.mdtest"
 agp = "9.4.0"
 android-compileSdk = "37"
 android-minSdk = "26"

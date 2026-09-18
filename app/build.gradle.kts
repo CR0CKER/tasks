@@ -81,6 +81,8 @@ android {
     @Suppress("LocalVariableName")
     buildTypes {
         debug {
+            // Fork-only test build: marks the version so it is easy to tell apart in Settings > About.
+            versionNameSuffix = "-mdtest"
             configure<CrashlyticsExtension> {
                 mappingFileUploadEnabled = false
             }
